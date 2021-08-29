@@ -23,8 +23,8 @@ parser.add_argument(
     '-r', '--recursive', action='store_true', default=False,
     help='Search through subfolders')
 parser.add_argument(
-    '-d', '--em', action='store_true', default=False,
-    help='Covert <ruby> dot to html <em> tag before adding furigana')
+    '-b', '--blod', action='store_true', default=False,
+    help='Covert <ruby> dot to html <b> tag before adding furigana')
 parser.add_argument(
     '-p', '--rp', action='store_false', default=True,
     help='Do not add ruby <rp> tag to provide fall-back parentheses for browsers that do not support display of ruby annotations')
@@ -74,8 +74,8 @@ def converter(file):
 
     soup = BeautifulSoup(open_file(file), 'lxml',
                          string_containers=yomituki.string_containers)
-    if args.em:
-        yomituki.point_ruby_to_em(soup.body)
+    if args.blod:
+        yomituki.point_ruby_to_blod(soup.body)
     yomituki.ruby_soup(soup.body, args.rp)
     write_file(file, str(soup))
     return float(os.path.getsize(file))/1024

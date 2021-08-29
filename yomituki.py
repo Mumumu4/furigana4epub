@@ -42,7 +42,7 @@ basesoup = BeautifulSoup(
     "<b></b>", 'lxml', string_containers=string_containers)
 
 
-def point_ruby_to_em(soup):
+def point_ruby_to_blod(soup):
     for ruby in soup.find_all('ruby'):
         rt = ruby.rt.string.strip()
         if rt in '・' * 100:
