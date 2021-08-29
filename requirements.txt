@@ -1,0 +1,1 @@
+lxml beautifulsoup4 fugashi unidic_lite

@@ -1,0 +1,6 @@
+*.swp
+*.pyc
+*.xhtml
+*.epub
+__pycache__
+converted
