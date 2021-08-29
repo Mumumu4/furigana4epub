@@ -11,8 +11,8 @@ This script is inspired by [WebNovelCrawler](https://github.com/tongyuantongyu/W
 
 install python required packages:
 
-`pip install -r requirements.txt -v`
-or
+`pip install -r requirements.txt -v`\
+or\
 `pip install lxml beautifulsoup4 fugashi unidic_lite`
 
 #### Usage
