@@ -6,7 +6,7 @@ Should work with Python3.6 or higher, but only tested with Python 3.7.5
 
 This script is inspired by [WebNovelCrawler](https://github.com/tongyuantongyu/WebNovelCrawler) ,and using some codes from it.
 
-#### Install
+### Install
 `git clone https://github.com/Mumumu4/furigana4epub.git`
 
 install python required packages:
@@ -16,7 +16,7 @@ or\
 `pip install lxml beautifulsoup4 fugashi unidic_lite`
 
 If you want to use [the full version of UniDic](https://github.com/polm/unidic-py#unidic-py), read [this article](https://github.com/polm/fugashi#installing-a-dictionary).
-#### Usage
+### Usage
 `python3 furigana4epub.py target.epub`
 
 ```
@@ -41,3 +41,6 @@ optional arguments:
                         of ruby annotations
   -q, --quiet           Be quiet
 ```
+### Note for Kindle
+If you are using [Calibre](https://calibre-ebook.com) for ebook convert, choose azw3(KF8) output format.
+Calibre's mobi output format wouldn't support <ruby> tag.
