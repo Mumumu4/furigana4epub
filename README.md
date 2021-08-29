@@ -7,16 +7,16 @@ Should work with Python3.6 or higher, but only tested with Python 3.7.5
 This script is inspired by [WebNovelCrawler](https://github.com/tongyuantongyu/WebNovelCrawler) ,and using some codes from it.
 
 #### Install
-'git clone https://github.com/Mumumu4/furigana4epub.git'
+`git clone https://github.com/Mumumu4/furigana4epub.git`
 
 install python required packages:
 
-'pip install -r requirements.txt -v'
+`pip install -r requirements.txt -v`
 or
-'pip install lxml beautifulsoup4 fugashi unidic_lite'
+`pip install lxml beautifulsoup4 fugashi unidic_lite`
 
 #### Usage
-'python3 furigana4epub.py target.epub'
+`python3 furigana4epub.py target.epub`
 
 ```
 python3 furigana4epub.py -h
