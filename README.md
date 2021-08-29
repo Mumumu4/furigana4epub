@@ -43,4 +43,4 @@ optional arguments:
 ```
 ### Note for Kindle
 If you are using [Calibre](https://calibre-ebook.com) for ebook conversion, choose azw3(KF8) output format.\
-Calibre's mobi output format wouldn't support '<ruby>' tag.
+Calibre's mobi output format wouldn't support `<ruby>` tag.
