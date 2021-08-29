@@ -9,7 +9,7 @@ This script is inspired by [WebNovelCrawler](https://github.com/tongyuantongyu/W
 ### Install
 `git clone https://github.com/Mumumu4/furigana4epub.git`
 
-install python required packages:
+install required python packages:
 
 `pip install -r requirements.txt -v`\
 or\
@@ -34,11 +34,8 @@ optional arguments:
   -e EXTENSION, --extension EXTENSION
                         File extension to filter by(default:.epub)
   -r, --recursive       Search through subfolders
-  -d, --em              Covert <ruby> dot to html <em> tag before adding
-                        furigana
-  -p, --rp              Do not add ruby <rp> tag to provide fall-back
-                        parentheses for browsers that do not support display
-                        of ruby annotations
+  -b, --blod              Covert <ruby> dot to html <b> tag before adding furigana
+  -p, --rp              Do not add ruby <rp> tag to provide fall-back parentheses for browsers that do not support display of ruby annotations
   -q, --quiet           Be quiet
 ```
 ### Note for Kindle
