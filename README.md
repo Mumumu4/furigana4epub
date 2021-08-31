@@ -1,30 +1,31 @@
 # furigana4epub
 
-A Python script for adding furigana to Japanese epub books using Mecab and Unidic.
+A Python script to add/remove furigana for Japanese epub books. Using Mecab and Unidic.
+
+ ある日の放課後だった。
+
+<p>ある<ruby>日<rp>(</rp><rt>ひ</rt><rp>)</rp></ruby>の<ruby>放課<rp>(</rp><rt>ほうか</rt><rp>)</rp>後<rp>(</rp><rt>ご</rt><rp>)</rp></ruby>だった。</p>
 
 Should work with Python3.6 or higher, but only tested with Python 3.7.5
 
-This script is inspired by [WebNovelCrawler](https://github.com/tongyuantongyu/WebNovelCrawler) ,and using some codes from it.
 
-### Install
-`git clone https://github.com/Mumumu4/furigana4epub.git`
-
-install required python packages:
-
-`pip install -r requirements.txt -v`\
-or\
-`pip install lxml beautifulsoup4 fugashi unidic_lite`
+## Install
+`pip install furigana4epub`
 
 If you want to use [the full version of UniDic](https://github.com/polm/unidic-py#unidic-py), read [this article](https://github.com/polm/fugashi#installing-a-dictionary).
-### Usage
-`python3 furigana4epub.py target.epub`
+## Usage
+To add furigana:\
+`furigana4epub target.epub`
+
+To remove furigana:\
+`furigana4epub -d target.epub`
 
 ```
-python3 furigana4epub.py -h
-usage: furigana4epub.py [-h] [-e EXTENSION] [-r] [-d] [-p] [-q]
+furigana4epub -h
+usage: furigana4epub [-h] [-e EXTENSION] [-r] [-d] [-b] [-p]
                         paths [paths ...]
 
-This script is written for adding furigana to Japanese epub books.
+A Python script to add/remove furigana for Japanese epub books. Using Mecab and Unidic.
 
 positional arguments:
   paths                 Paths of Japanese epub books
@@ -34,10 +35,16 @@ optional arguments:
   -e EXTENSION, --extension EXTENSION
                         File extension to filter by(default:.epub)
   -r, --recursive       Search through subfolders
-  -b, --blod              Covert <ruby> dot to html <b> tag before adding furigana
-  -p, --rp              Do not add ruby <rp> tag to provide fall-back parentheses for browsers that do not support display of ruby annotations
-  -q, --quiet           Be quiet
+  -d, --remove          remove furigana from epub file
+  -b, --blod            Covert <ruby> dot to html <b> tag before adding
+                        furigana
+  -p, --rp              Do not add ruby <rp> tag to provide fall-back
+                        parentheses for browsers that do not support display
+                        of ruby annotations
 ```
-### Note for Kindle
+## A note for Kindle
 If you are using [Calibre](https://calibre-ebook.com) for ebook conversion, choose azw3(KF8) output format.\
 Calibre's mobi output format wouldn't support `<ruby>` tag.
+
+## Credits
+This script is inspired by [WebNovelCrawler](https://github.com/tongyuantongyu/WebNovelCrawler), [pinyin2epub](https://github.com/shotazc/pinyin2epub)  ,have some codes from them.

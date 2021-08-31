@@ -90,7 +90,7 @@ class EpubConvert:
 def main():
     import argparse
     parser = argparse.ArgumentParser(
-        description='This script is written for adding furigana to Japanese epub books.')
+        description='A Python script to add/remove furigana for Japanese epub books. Using Mecab and Unidic.')
     parser.add_argument(
         'paths', type=str, nargs='+',
         help='Paths of Japanese epub books')
