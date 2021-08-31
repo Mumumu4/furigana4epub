@@ -24,6 +24,6 @@ jobs:
         user: __token__
         password: ${{ secrets.pypi_password }}
     - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
