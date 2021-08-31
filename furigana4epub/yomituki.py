@@ -152,7 +152,7 @@ def ruby_navigablestring(navigablestring, is_ruby_rp):
 
 def ruby_soup(soup, is_ruby_rp=False):
     for i in soup.children:
-        if i is not None and type(i) is NavigableString and i.strip() is not '':
+        if i is not None and type(i) is NavigableString and i.strip():
             new_i = basesoup.new_tag('temptag')
             for ele in ruby_navigablestring(i, is_ruby_rp):
                 new_i.append(ele)

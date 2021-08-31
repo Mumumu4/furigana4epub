@@ -3,4 +3,9 @@
 *.xhtml
 *.epub
 __pycache__
-converted
+converted/
+build/
+dist/
+*.egg-info/
+*.egg
+*~
