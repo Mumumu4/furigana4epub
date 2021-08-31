@@ -7,5 +7,6 @@ converted/
 build/
 dist/
 *.egg-info/
+.eggs/
 *.egg
 *~
