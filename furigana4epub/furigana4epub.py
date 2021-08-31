@@ -7,7 +7,7 @@ import zipfile
 
 from bs4 import BeautifulSoup
 
-import yomituki
+from furigana4epub import yomituki
 
 
 def unzippen(filename, dst_path):
