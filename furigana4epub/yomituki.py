@@ -1,5 +1,6 @@
 # coding: utf-8
 from itertools import groupby
+import re
 
 from bs4 import BeautifulSoup
 from bs4.element import (NavigableString, Script, Stylesheet, Tag,
@@ -12,6 +13,8 @@ katakana_chart = "ァアィイゥウェエォオカガキギクグケゲコゴ�
 hiragana_chart = "ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖゝゞ"
 h2k = str.maketrans(hiragana_chart, katakana_chart)
 k2h = str.maketrans(katakana_chart, hiragana_chart)
+
+white_space_re = re.compile(r'(\s+)')
 
 
 class RBString(NavigableString):
@@ -68,7 +71,6 @@ def hantei(word):
 
 
 def cut_end(text, hira):
-
     if text[-1] == hira[-1]:
         for i in range(1, min(len(hira), len(text))):
             if text[-i - 1] != hira[-i - 1]:
@@ -97,33 +99,7 @@ def tag_wrap(name, str):
     return new_tag
 
 
-def ruby_wrap_bs4(text, yomi, is_ruby_rp=False):
-    ruby_tag = basesoup.new_tag('ruby')
-    ruby_tag.append(text)
-    rt_tag = tag_wrap('rt', yomi)
-    if is_ruby_rp:
-        ruby_tag.append(tag_wrap('rp', '('))
-    ruby_tag.append(rt_tag)
-    if is_ruby_rp:
-        ruby_tag.append(tag_wrap('rp', ')'))
-    return ruby_tag
-
-
-def ruby_wraps_bs4(yomis, is_ruby_rp=False):
-    ruby_tag = basesoup.new_tag("ruby")
-    for text, yomi in yomis:
-        ruby_tag.append(text)
-        rt_tag = tag_wrap('rt', yomi)
-        if is_ruby_rp:
-            ruby_tag.append(tag_wrap('rp', '('))
-        ruby_tag.append(rt_tag)
-        if is_ruby_rp:
-            ruby_tag.append(tag_wrap('rp', ')'))
-    return ruby_tag
-
-
 def ruby_text(text):
-
     plain = ''
     if len(text) < 1:
         return plain
@@ -138,25 +114,57 @@ def ruby_text(text):
     return plain
 
 
-def ruby_navigablestring(navigablestring, is_ruby_rp):
-    string = str(navigablestring)
-    yomi = yomituki(string)
-    for k, g in groupby(yomi, lambda x: type(x)):
-        if k is None:
-            continue
-        if k == str:
-            yield ''.join(g)
-        else:
-            yield ruby_wraps_bs4(g, is_ruby_rp)
+class RubySoup:
+    def __init__(self, soup, is_ruby_rp=True) -> None:
+        self.is_ruby_rp = is_ruby_rp
+        self.ruby_soup(soup)
 
+    def ruby_soup(self, soup):
+        for i in soup.children:
+            if i is not None and type(i) is NavigableString and i.strip():
+                new_i = basesoup.new_tag('temptag')
+                # mecab will ignore some whitespace,so we handle it here
+                for ele in white_space_re.split(i):
+                    if ele.strip():
+                        for ele2 in self.ruby_navigablestring(ele):
+                            new_i.append(ele2)
+                    elif ele:
+                        new_i.append(ele)
+                i.replace_with(new_i)
+                new_i.unwrap()
+            elif isinstance(i, Tag) and i.name not in ('ruby', 'rt', 'rp'):
+                self.ruby_soup(i)
 
-def ruby_soup(soup, is_ruby_rp=False):
-    for i in soup.children:
-        if i is not None and type(i) is NavigableString and i.strip():
-            new_i = basesoup.new_tag('temptag')
-            for ele in ruby_navigablestring(i, is_ruby_rp):
-                new_i.append(ele)
-            i.replace_with(new_i)
-            new_i.unwrap()
-        elif isinstance(i, Tag) and i.name not in ('ruby', 'rt', 'rp'):
-            ruby_soup(i, is_ruby_rp)
+    def ruby_navigablestring(self, navigablestring):
+        string = str(navigablestring)
+        yomi = yomituki(string)
+        for k, g in groupby(yomi, lambda x: type(x)):
+            if k is None:
+                continue
+            if k == str:
+                yield ''.join(g)
+            else:
+                yield self.ruby_wraps_bs4(g)
+
+    def ruby_wrap_bs4(self, text, yomi):
+        ruby_tag = basesoup.new_tag('ruby')
+        ruby_tag.append(text)
+        rt_tag = tag_wrap('rt', yomi)
+        if self.is_ruby_rp:
+            ruby_tag.append(tag_wrap('rp', '('))
+        ruby_tag.append(rt_tag)
+        if self.is_ruby_rp:
+            ruby_tag.append(tag_wrap('rp', ')'))
+        return ruby_tag
+
+    def ruby_wraps_bs4(self, yomis):
+        ruby_tag = basesoup.new_tag("ruby")
+        for text, yomi in yomis:
+            ruby_tag.append(text)
+            rt_tag = tag_wrap('rt', yomi)
+            if self.is_ruby_rp:
+                ruby_tag.append(tag_wrap('rp', '('))
+            ruby_tag.append(rt_tag)
+            if self.is_ruby_rp:
+                ruby_tag.append(tag_wrap('rp', ')'))
+        return ruby_tag

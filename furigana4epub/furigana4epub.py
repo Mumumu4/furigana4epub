@@ -48,10 +48,11 @@ def write_file(file_name, content):
 
 
 class EpubConvert:
-    def __init__(self, filename, blod=False, rp=True,un_ruby=False) -> None:
+    def __init__(self, filename, blod=False, rp=True, un_ruby=False, suffix='') -> None:
         self.blod = blod
         self.rp = rp
         self.un_ruby = un_ruby
+        self.suffix = suffix
         self.convert_epub(filename)
 
     def ruby_html_file(self, file):
@@ -59,10 +60,10 @@ class EpubConvert:
                              string_containers=yomituki.string_containers)
         if self.blod:
             yomituki.point_ruby_to_blod(soup.body)
-        yomituki.ruby_soup(soup.body, self.rp)
+        yomituki.RubySoup(soup.body, self.rp)
         write_file(file, str(soup))
         return float(os.path.getsize(file))/1024
-        
+
     def un_ruby_html_file(self, file):
         soup = BeautifulSoup(open_file(file), 'lxml',
                              string_containers=yomituki.string_containers)
@@ -82,10 +83,18 @@ class EpubConvert:
                 fsum = len(file_list)
                 fsumlen = len(str(fsum))
                 for i, (li, file_size) in enumerate(zip(file_list,
-                    executor.map(self.un_ruby_html_file if self.un_ruby else self.ruby_html_file, file_list))):
-                    print(f"{str(i+1).zfill(fsumlen)} of {fsum} written: {li} {file_size:.1f}KB")
+                                                        executor.map(self.un_ruby_html_file if self.un_ruby else self.ruby_html_file, file_list))):
+                    print(
+                        f"{str(i+1).zfill(fsumlen)} of {fsum} written: {li} {file_size:.1f}KB")
             print(f'zipping epub file in {tmp_dir}')
-            zippen(f'{name}_no_furigana.epub' if self.un_ruby else f'{name}_furigana.epub', tmp_dir)
+            if self.suffix:
+                epubfile = f'{name}{self.suffix}.epub'
+                zippen(epubfile, tmp_dir)
+            else:
+                epubfile = f'{name}_no_furigana.epub' if self.un_ruby else f'{name}_furigana.epub'
+                zippen(epubfile, tmp_dir)
+            print(f'{epubfile} created')
+
 
 def main():
     import argparse
@@ -93,13 +102,16 @@ def main():
         description='A Python script to add/remove furigana for Japanese epub books. Using Mecab and Unidic.')
     parser.add_argument(
         'paths', type=str, nargs='+',
-        help='Paths of Japanese epub books')
+        help='Paths of Japanese epub books,can be file names or file folders')
     parser.add_argument(
         '-e', '--extension', default='.epub',
         help='File extension to filter by(default:.epub)')
     parser.add_argument(
         '-r', '--recursive', action='store_true', default=False,
         help='Search through subfolders')
+    parser.add_argument(
+        '-s', '--suffix', default='',
+        help='suffix of the converted file(default:"_furigana" for adding or "_no_furigana" for removing furiganas)')
     parser.add_argument(
         '-d', '--remove', action='store_true', default=False,
         help='remove furigana from epub file')
@@ -108,7 +120,7 @@ def main():
         help='Covert <ruby> dot to html <b> tag before adding furigana')
     parser.add_argument(
         '-p', '--rp', action='store_false', default=True,
-        help='Do not add ruby <rp> tag to provide fall-back parentheses for browsers that do not support display of ruby annotations')
+        help='Do not add ruby <rp> tag to provide fall-back parentheses for browsers that do not support display of ruby annotations.Result a smaller output but with less compatibility.')
     args = parser.parse_args()
 
     paths = args.paths
@@ -125,9 +137,9 @@ def main():
 
     for filename in files:
         print("prosessing started")
-        EpubConvert(filename, args.blod, args.rp,args.remove)
+        EpubConvert(filename, args.blod, args.rp, args.remove, args.suffix)
         print("prosessing completed")
-        
+
+
 if __name__ == '__main__':
     main()
-
