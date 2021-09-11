@@ -8,7 +8,7 @@ import zipfile
 from bs4 import BeautifulSoup
 
 from furigana4epub import yomituki
-
+from furigana4epub.version import version
 
 def unzippen(filename, dst_path):
     input_file = zipfile.ZipFile(filename, 'r')
@@ -17,8 +17,12 @@ def unzippen(filename, dst_path):
 
 def zippen(filename, dst_path):
     with zipfile.ZipFile(filename, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as myzip:
-        for root, subfolders, files in os.walk(dst_path):
+        #http://idpf.org/epub/30/spec/epub30-ocf.html#sec-zip-container-mime
+        myzip.writestr('mimetype','application/epub+zip',compress_type=zipfile.ZIP_STORED)
+        for depth,(root, subfolders, files) in enumerate(os.walk(dst_path)):
             for file in files:
+                if depth == 0 and file.lower() == 'mimetype':
+                    continue
                 fullpath = os.path.join(root, file)
                 myzip.write(fullpath, arcname=os.path.relpath(
                     fullpath, start=dst_path))
@@ -99,7 +103,7 @@ class EpubConvert:
 def main():
     import argparse
     parser = argparse.ArgumentParser(
-        description='A Python script to add/remove furigana for Japanese epub books. Using Mecab and Unidic.')
+        description=f'A Python script to add/remove furigana for Japanese epub books. Using Mecab and Unidic. v{version}')
     parser.add_argument(
         'paths', type=str, nargs='+',
         help='Paths of Japanese epub books,can be file names or file folders')
